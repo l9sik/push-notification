@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: test-service
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+kafka:
+  topic:
+    notification:
+      request: notification-request
+
+server:
+  port: 0
+eureka:
+  instance:
+    hostname: localhost

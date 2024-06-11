@@ -1,0 +1,73 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        ### Test Service route
+        - id: api-gateway
+          uri: lb://test-service
+          predicates:
+            - Path=/test
+          filters:
+            - LoggingFilter
+            - AuthenticationFilter=ROLE_ADMIN
+
+          ### User self Service route
+        - id: service-user-self
+          uri: lb://user-service
+          predicates:
+            - Path=/users/self/**
+          filters:
+            - AuthenticationFilter=ROLE_USER
+            - LoggingFilter
+
+          ### User Service route
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - AuthenticationFilter=ROLE_ADMIN
+            - LoggingFilter
+
+          ### Identity Server route
+        - id: identity-service
+          uri: lb://identity-server
+          predicates:
+            - Path=/auth/**
+
+          ### Self subscription Service route
+        - id: self-subscription-service
+          uri: lb://subscription-service
+          predicates:
+            - Path=/subscriptions/self/**
+          filters:
+            - AuthenticationFilter=ROLE_USER
+            - LoggingFilter
+          ### Subscription Service route
+        - id: subscription-service
+          uri: lb://subscription-service
+          predicates:
+            - Path=/subscriptions/**
+          filters:
+            - AuthenticationFilter=ROLE_ADMIN
+            - LoggingFilter
+
+          ### Notification Service route
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/notifications/**
+server:
+  port: 8080
+logging:
+  level:
+    root: info

@@ -1,0 +1,1 @@
+INSERT INTO public.tbl_authority (authority_name) VALUES ('ROLE_USER'), ('ROLE_ADMIN');
